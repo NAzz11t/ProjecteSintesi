@@ -1,0 +1,54 @@
+body {
+  background-color: blue;
+}
+
+title{
+  color: white;
+}
+
+p{
+  color: white;
+}
+
+#actions, #directions {
+  margin-top: 20px;
+}
+#directions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 100px;
+}
+#directions button {
+  margin: 5px;
+  border-radius: 100px;
+  border-color: yellow;
+}
+
+#talkButton {
+  background-color: #af4c4c;
+  width: 100px;
+  margin-top: 20px;
+  border-radius: 20%;
+}
+
+#actionButton {
+  margin-top: 30px;
+}
+
+#actionButton button {
+  background-color: #4CAF50;
+  border-radius: 20px;
+}
+#stage{
+  text-align: center;
+  border: 10px;
+}
+
+img{
+border-radius: 50px;
+}
+
+input{
+  margin-bottom: 10px;
+}

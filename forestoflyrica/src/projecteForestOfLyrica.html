@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Forest of Lyrica</title>
+    <link rel="stylesheet" href="lyrica.css">
+</head>
+<body>
+    <div id="stage">
+        <h1>The Forest of Lyrica</h1>
+        <img src="" width="300" height="267">
+        <p id="output"></p>
+        <div id="directions">
+            <button id="northButton">▲ North</button>
+        <div>
+            <button id="westButton">◄ West</button>
+            <button id="eastButton">East ►</button>
+            </div>
+            <button id="southButton">South ▼</button>
+        </div>
+        <div id="actionButton">
+            <button id="takeButton">Take</button>
+            <button id="dropButton">Drop</button>
+            <button id="useButton">Use</button>
+        </div>
+        <button id="talkButton">Talk</button>
+        </div>
+
+    <script>
+        var map = [];
+        map[0] = "Island of the gods.";
+        map[1] = "Snow cave.";
+        map[2] = "A narrow pathway.";
+        map[3] = "Cordelius forest.";
+        map[4] = "King of hell.";
+        map[5] = "Bridge of a thousand gods.";
+        map[6] = "A lonely wooden bench.";
+        map[7] = "An old stone keep.";
+        map[8] = "Infernal dungeons.";
+        map[9] = "Bridge to the infernal castle";
+        map[10] = "An isolated cottage. Faint music comes from inside.";
+        map[11] = "An ancient gate.";
+        map[12] = "Fairy house.";
+        map[13] = "Hellish portal.";
+        map[14] = "Hellish labyrinth.";
+        map[15] = "Forest of a thousand voices.";
+        map[16] = "Two thousand angels cemetery.";
+        map[17] = "Stairs to the castle of two thousand voices.";
+        map[18] = "Death lord's castle.";
+        map[19] = "Death lord.";
+        map[20] = "A sleeping dragon.";
+        map[21] = "Cave of wishes";
+        map[22] = "A deep well.";
+        map[23] = "Forest of lyrica forest.";
+        map[24] = "The edge of a river.";
+        
+        //Images
+        var images = [];
+        images[0] = "isla-flotante.png";
+        images[1] = "nevado.png";
+        images[2] = "path.png";
+        images[3] = "bosque-de-cordelius.png";
+        images[4] = "final-bos-infierno.png";
+        images[5] = "puente.png";
+        images[6] = "bench.png";
+        images[7] = "keep.png";
+        images[8] = "cuevas-infierno.png";
+        images[9] = "castillo-infernal.png";
+        images[10] = "cottage.png";
+        images[11] = "gate.png";
+        images[12] = "casa-de-las-hadas.png";
+        images[13] = "puerta.png";
+        images[14] = "mazmorras.png";
+        images[15] = "bosque-encantado.png";
+        images[16] = "cementerio-angales.png";
+        images[17] = "mysterious-stone-stairs.png";
+        images[18] = "castillo-encantado.png";
+        images[19] = "final-bos-tenebroso.png";
+        images[20] = "dragon.png";
+        images[21] = "cueva.png";
+        images[22] = "well.png";
+        images[23] = "magenta-naturaleza-fantasia.png";
+        images[24] = "river.png";
+        
+        //Blocked Path Messages
+        var blockedPathMessages = [];
+        blockedPathMessages[0] = "It's too dangerous to move that way. You can fall.";
+        blockedPathMessages[1] = "Be careful, you may freeze from the cold.";
+        blockedPathMessages[2] = "Follow the right path, you can get lost.";
+        blockedPathMessages[3] = "Don't go off the path and watch where you step because you can get poisoned.";
+        blockedPathMessages[4] = "You have encountered the King of hell, fight him or escape through places where he does not catch you.";
+        blockedPathMessages[5] = "Follow the bridge.";
+        blockedPathMessages[6] = "";
+        blockedPathMessages[7] = "";
+        blockedPathMessages[8] = "";
+        blockedPathMessages[9] = "Watch with the lava.";
+        blockedPathMessages[10] = "You're too scared to go that way.";
+        blockedPathMessages[11] = "";
+        blockedPathMessages[12] = "";
+        blockedPathMessages[13] = "";
+        blockedPathMessages[14] = "It's too dangerous to move that way. You can get lost.";
+        blockedPathMessages[15] = "Follow the path if you can't get lost.";
+        blockedPathMessages[16] = "";
+        blockedPathMessages[17] = "";
+        blockedPathMessages[18] = "";
+        blockedPathMessages[19] = "You have encountered the Lord of Death, fight him or escape through places where he does not catch you.";
+        blockedPathMessages[20] = "You have encountered the dragon, fight him or escape through places where he does not catch you.";
+        blockedPathMessages[21] = "Watch where you are going as you will make very sharp rocks.";
+        blockedPathMessages[22] = "A mysterious force holds you back.";
+        blockedPathMessages[23] = "It's too dangerous to move that way. Follow the lake.";
+        blockedPathMessages[24] = "You can't cross.";
+
+        //Items
+        var items = ["stone", "angel-soul"];
+        var itemsLocation = [17, 16];
+        var backpack = [];
+
+        var mapLocation = 2;
+        var playersInput = "";
+        var gameMessage = "";
+        var actionsIKnow = ["north", "east", "south", "west", "take", "use", "drop"];
+        var action = "";
+        var itemsIKnow = ["flute", "stone", "sword", "angel-soul"];
+        var item = "";
+        var lord = 0;
+
+
+        var output = document.querySelector("#output");
+        var image = document.querySelector("img");
+
+        var northButton = document.getElementById("northButton");
+        northButton.addEventListener("click", north, false);
+        var eastButton = document.getElementById("eastButton");
+        eastButton.addEventListener("click", east, false);
+        var southButton = document.getElementById("southButton");
+        southButton.addEventListener("click", south, false);
+        var westButton = document.getElementById("westButton");
+        westButton.addEventListener("click", west, false);
+
+        document.getElementById("takeButton").addEventListener("click", takeItem, false);
+        document.getElementById("dropButton").addEventListener("click", dropItem, false);
+        document.getElementById("useButton").addEventListener("click", useItem, false);
+        document.getElementById("talkButton").addEventListener("click", talkToDeathLord, false);
+
+        render();
+
+        function playGame() {
+            playersInput = playersInput.toLowerCase();
+            gameMessage = "";
+            action = "";
+
+            for (var i = 0; i < actionsIKnow.length; i++) {
+                if (playersInput.indexOf(actionsIKnow[i]) !== -1) {
+                    action = actionsIKnow[i];
+                    break;
+                }
+            }
+
+            for (var i = 0; i < itemsIKnow.length; i++) {
+                if (playersInput.indexOf(itemsIKnow[i]) !== -1) {
+                    item = itemsIKnow[i];
+                    break;
+                }
+            }
+
+            switch (action) {
+                case "north":
+                    north();
+                    break;
+
+                case "east":
+                    east();
+                    break;
+
+                case "south":
+                    south();
+                    break;
+
+                case "west":
+                    west();
+                    break;
+
+                case "take":
+                    takeItem();
+                    break;
+
+                case "use":
+                    useItem();
+                    break;
+
+                case "drop":
+                    dropItem();
+                    break;
+
+                default:
+                    gameMessage = "I don't understand that.";
+            }
+            render();
+        }
+
+        function north() {
+            if (mapLocation >= 5) {
+                mapLocation -= 5;
+            } else {
+                gameMessage = blockedPathMessages[mapLocation];
+            }
+            render();
+        }
+
+        function east() {
+            if (mapLocation % 5 !== 4) {
+                mapLocation++;
+            } else {
+                gameMessage = blockedPathMessages[mapLocation];
+            }
+            render();
+        }
+
+        function south() {
+            if (mapLocation < 20) {
+                mapLocation += 5;
+            } else {
+                gameMessage = blockedPathMessages[mapLocation];
+            }
+            render();
+        }
+
+        function west() {
+            if (mapLocation % 5 !== 0) {
+                mapLocation--;
+            } else {
+                gameMessage = blockedPathMessages[mapLocation];
+            }
+            render();
+        }
+
+        function takeItem() {
+            item = prompt("What do you want to take?");
+            var itemIndex = items.indexOf(item);
+            if (itemsLocation[itemIndex] === mapLocation && itemIndex !== -1) {
+                backpack.push(item);
+                items.splice(itemIndex, 1);
+                itemsLocation.splice(itemIndex, 1);
+                gameMessage = "You took the " + item + ".";
+            } else {
+                gameMessage = "There's nothing to take here.";
+            }
+            render();
+        }
+
+        function dropItem() {
+            item = prompt("What do you want to drop?");
+            if (backpack.length === 0) {
+                gameMessage = "You're not carrying anything to drop.";
+                return;
+            }
+            
+            var itemIndex = backpack.indexOf(item);
+            if (itemIndex !== -1) {
+                backpack.splice(itemIndex, 1);
+                items.push(item);
+                itemsLocation.push(mapLocation);
+                gameMessage = "You dropped the " + item + ".";
+            } else {
+                gameMessage = "You're not carrying that item.";
+            }
+            render();
+        }
+
+        function useItem() {
+            item = prompt("What do you want to use?");
+            var backpackIndexNumber = backpack.indexOf(item);
+
+            if (backpack.length === 0) {
+                gameMessage = "You're not carrying anything to use.";
+                return;
+            }
+            if (backpackIndexNumber == -1) {
+                gameMessage = "You're not carrying that item.";
+                return;
+            }
+            switch (item) {
+                case "flute":
+                    if (mapLocation == 24) {
+                        gameMessage = "Beautiful music fills the air. A wizard old man steps outside and hands you a sword.";
+                        backpack.splice(backpackIndexNumber, 1);
+                        backpack.push("sword");
+                    } else {
+                        gameMessage = "You try and play the flute, but it makes no sound here.";
+                    }
+                    render();
+                    break;
+                case "sword":
+                    if (mapLocation == 4) {
+                        var playerPower = Math.floor(Math.random()* 100);
+                        var lord = Math.floor(Math.random()* 100);
+                        if (playerPower > lord) {
+                            gameMessage = "You swing the sword and slay the King of hell. You've saved the forest of Lyrica!";
+                        } else {
+                            gameMessage = "You died. You couldn't save the forest of Lyrica.";
+                            disableButtons();
+                        }
+                    }
+                    if (mapLocation == 20) {
+                        var playerPower = Math.floor(Math.random() * 100);
+                        var lord = Math.floor(Math.random() * 100);
+                        if (playerPower > lord) {
+                            gameMessage = "You swing the sword and slay the Dragon. You've saved the forest of Lyrica!";
+                        } else {
+                            gameMessage = "You died. You couldn't save the forest of Lyrica.";
+                            disableButtons();
+                        }
+                    }
+                    render();
+                    break;
+                case "stone":
+                    if (mapLocation === 22) {
+                        gameMessage = "You drop the stone in the well. A magical flute appears.";
+                        backpack.splice(backpackIndexNumber, 1);
+                        backpack.push("flute");
+                    } else {
+                        gameMessage = "You fumble with the stone in your pocket.";
+                    }
+                    render();
+                    break;
+                case "angel-soul":
+                    if (mapLocation == 19) {
+                        gameMessage = "You give the angel-soul to the Death Lord. 'You were lucky I didn't get mad before! Now, get out of here, if you don't want to die!'";
+                        backpack.splice(backpackIndexNumber, 1);
+                    } else {
+                        gameMessage = "You fumble with the angel-soul in your pocket.";
+                    }
+                    render();
+                    break;
+            }
+        }
+
+        function talkToDeathLord() {
+            lord++;
+            if (lord == 1) {
+                alert ("Death Lord: Hey little one. I need your help to recover my soul and know who I am.");
+            }
+                if (lord == 2) {
+                var answer = prompt("You have found my soul, little one?");
+                if (answer == "yes") {
+                    output.innerHTML = "Death Lord: Come, and leave it here in my lap, little one, don't be afraid.";
+                } else {
+                    alert("YOU DIED");
+                    disableButtons();
+                }
+        }
+    }
+        function disableButtons() {
+            northButton.disabled = true;
+            eastButton.disabled = true;
+            southButton.disabled = true;
+            westButton.disabled = true;
+            document.getElementById("takeButton").disabled = true;
+            document.getElementById("useButton").disabled = true;
+            document.getElementById("dropButton").disabled = true;
+            document.getElementById("talkButton").disabled = true;
+        }
+
+        function render() {
+            // Location
+            output.innerHTML = map[mapLocation];
+            image.src = "../images/" + images[mapLocation];
+
+            for (var i = 0; i < items.length; i++) {
+                if (mapLocation === itemsLocation[i]) {
+                    output.innerHTML += "<br>You see a <strong>" + items[i] + "</strong> here.";
+                }
+            }
+            // Game message
+            output.innerHTML += "<br><em>" + gameMessage + "</em>";
+            gameMessage = "";
+
+            // Backpack items
+            if (backpack.length !== 0) {
+                output.innerHTML += "<br>You're carrying: " + backpack.join(", ");
+            }
+
+            // Show talk button only when at Death Lord's location
+            document.getElementById("talkButton").style.display = (mapLocation === 19) ? "inline-block" : "none";
+        }
+    </script>
+</body>
+</html>

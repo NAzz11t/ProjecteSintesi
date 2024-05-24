@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D arrays</title>
+</head>
+<body>
+    <Input class="text" id="color1"></Input>
+    <Input class="text" id="color2"></Input>
+    <button id="buto"> Pinta </button>
+    <div id="stage"></div>
+</body>
+ 
+ 
+<style>
+ 
+#stage{
+    position: relative;
+}
+.cell{
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+    background-color: white;
+}
+</style>
+ 
+<script>
+    var stage = document.querySelector("#stage");
+    var color1 = document.querySelector("#color1");
+    var color2 = document.querySelector("#color2");
+    var buto = document.querySelector("#buto");
+    buto.addEventListener("click", pintar, false);
+    var pattern =
+    [
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+    ];
+    var SIZE = 60;
+    var SPACE = 0;
+
+    var ROWS = 8;
+    var COLUMNS = 8;
+
+    var ROWS = pattern.length;
+    var COLUMNS = pattern[0].length;
+
+    function pintar(){
+    for (var row = 0; row < ROWS; row++) {
+        for (var column = 0; column < COLUMNS; column++) {
+            var cell = document.createElement("div");
+            cell.setAttribute("class", "cell");
+
+            stage.appendChild(cell);
+
+            var colo1 = color1.value;
+            var colo2 = color2.value;
+
+            if (pattern[row][column] === 0)
+            {
+                cell.style.backgroundColor = colo1;
+            }
+            if (pattern[row][column] === 1)
+            {
+                cell.style.backgroundColor = colo2;
+            }
+
+            cell.style.top = row * (SIZE + SPACE) + "px";
+            cell.style.left = column * (SIZE + SPACE) + "px";
+
+        }
+    }
+}
+</script>
+tiene menú contextual

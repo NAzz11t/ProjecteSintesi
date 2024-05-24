@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D arrays</title>
+</head>
+<body>
+    <div id="stage"></div>
+</body>
+
+<style>
+
+#stage{
+    position: relative;
+}
+.cell{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    background-color: white;
+}
+</style>
+
+<script>
+    var stage = document.querySelector("#stage");
+    var pattern = 
+    [
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    ];
+
+    var SIZE = 50;
+    var SPACE = 0;
+
+    var ROWS = pattern.length;
+    var COLUMNS = pattern[0].length;
+    
+    pintar();
+    var interval = setInterval(pintar, 500);
+
+    function pintar(){
+    var pattern =
+    [
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    [color(), color(), color(), color(), color(), color(), color(), color()],
+    ];
+    
+    for (var row = 0; row < ROWS; row++) {
+        for (var column = 0; column < COLUMNS; column++) {
+            var cell = document.createElement("div");
+            cell.setAttribute("class", "cell");
+
+            stage.appendChild(cell);
+
+            if (pattern[row][column] === 1)
+            {
+                cell.style.backgroundColor = "black";
+            }
+            if (pattern[row][column] === 2)
+            {
+                cell.style.backgroundColor = "yellow";
+            }
+            if (pattern[row][column] === 3)
+            {
+                cell.style.backgroundColor = "green";
+            }
+            if (pattern[row][column] === 4)
+            {
+                cell.style.backgroundColor = "lightblue";
+            }
+            if (pattern[row][column] === 5)
+            {
+                cell.style.backgroundColor = "red";
+            }
+            if (pattern[row][column] === 6)
+            {
+                cell.style.backgroundColor = "orange";
+            }
+            if (pattern[row][column] === 7)
+            {
+                cell.style.backgroundColor = "pink";
+            }
+            if (pattern[row][column] === 8)
+            {
+                cell.style.backgroundColor = "limegreen";
+            }
+
+            cell.style.top = row * (SIZE + SPACE) + "px";
+            cell.style.left = column * (SIZE + SPACE) + "px";
+        }
+    }
+    }
+    function color (){
+        return Math.floor(Math.random() * 9);
+    }
+</script>

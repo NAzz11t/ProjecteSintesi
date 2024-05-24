@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Nana's BLACKJACK</title>
+</head> 
+<body>
+    <h2>The BlackJack</h2>
+    <div id="board3"></div>
+    <div id="board">
+        <div id="player">
+            <button id="start">Start the game</button>
+            <button id="ask">Ask</button>
+            <button id="stand">Stand</button>
+            <p id="card"></p>
+            <p id="points">Points total: </p>
+            <h4 id="result"></h4>
+        </div>
+        <div id="bank">
+            <button id="startBank">Start the game</button>
+            <button id="askBank">Ask</button>
+            <button id="standBank">Stand</button>
+            <p id="bankCard"></p>
+            <p id="bankPoints">Points total: </p>
+            <h4 id="resultBank"></h4>
+        </div>
+    </div>
+    <div id="board2"></div>
+</body>
+</html>
+
+<script>
+// Player
+var buttonStart = document.querySelector("#start");
+var buttonAsk = document.querySelector("#ask");
+var buttonStand = document.querySelector("#stand");
+var points = document.querySelector("#points");
+var card = document.querySelector("#card");
+var result = document.querySelector("#result");
+buttonStart.addEventListener("click", startFunction, false);
+buttonAsk.addEventListener("click", askFunction, false);
+buttonStand.addEventListener("click", standFunction, false);
+
+// Bank
+var buttonStartBank = document.querySelector("#startBank");
+var buttonAskBank = document.querySelector("#askBank");
+var buttonStandBank = document.querySelector("#standBank");
+var bankPoints = document.querySelector("#bankPoints");
+var bankCard = document.querySelector("#bankCard");
+var resultBank = document.querySelector("#resultBank");
+buttonStartBank.addEventListener("click", startBankFunction, false);
+buttonAskBank.addEventListener("click", askBankFunction, false);
+buttonStandBank.addEventListener("click", standBankFunction, false);
+
+// Functions for the player
+function startFunction(){
+    start();
+}
+function askFunction(){
+    ask();
+}
+function standFunction(){
+    stand();
+}
+
+// Functions for the bank
+function startBankFunction(){
+    startBank();
+}
+function askBankFunction(){
+    askBank();
+}
+function standBankFunction(){
+    standBank();
+}
+
+var suits = [];
+suits[0]= "hearts";
+suits[1]= "diamonds";
+suits[2]= "clubs";
+suits[3]= "spades";
+
+var values = [];
+values[0]="11";
+values[1]="10";
+values[2]="10";
+values[3]="10";
+values[4]="2";
+values[5]="3";
+values[6]="4";
+values[7]="5";
+values[8]="6";
+values[9]="7";
+values[10]="8";
+values[11]="9";
+values[12]="10";
+
+var playerCards = [];
+var bankCards = [];
+
+var playerStand = false;
+var bankStand = false;
+var gameFinished = false;
+
+function start(){
+    var randomNum = Math.floor(Math.random() * values.length);
+    var randomSuit = Math.floor(Math.random() * suits.length);
+    var currentValue = values[randomNum];
+    card.innerHTML = "You got a " + values[randomNum] + " of " + suits[randomSuit];
+    points.innerHTML = "Starting with " + values[randomNum] + " points";
+    playerCards.push(currentValue);
+}
+
+function ask(){
+    var randomNum = Math.floor(Math.random() * values.length);
+    var randomSuit = Math.floor(Math.random() * suits.length);
+    var currentValue = values[randomNum];
+    playerCards.push(currentValue);
+    card.innerHTML = "You got a " + values[randomNum] + " of " + suits[randomSuit];
+    let sumPlayerCards = 0;
+    
+    for(let number in playerCards){
+    sumPlayerCards += parseInt(playerCards[number])
+    if(sumPlayerCards > 21){ 
+        result.innerHTML = "You lost..."
+        resultBank.innerHTML = "You won!!"
+        gameFinished = true;
+        endGame();
+    } else {
+        points.innerHTML = "Now you have "+sumPlayerCards + " points.";
+    }
+    }
+}
+function startBank(){
+    var randomNum = Math.floor(Math.random() * values.length);
+    var randomSuit = Math.floor(Math.random() * suits.length);
+    var currentValue = values[randomNum];
+    bankCard.innerHTML = "The bank got a " + values[randomNum] + " of " + suits[randomSuit];
+    bankPoints.innerHTML = "Starting with " + values[randomNum] +" points";
+    bankCards.push(currentValue);
+}
+function askBank(){
+    var randomNum = Math.floor(Math.random() * values.length);
+    var randomSuit = Math.floor(Math.random() * suits.length);
+    var currentValue = values[randomNum];
+    bankCards.push(currentValue);
+    bankCard.innerHTML = "The bank got a " + values[randomNum] + " of " + suits[randomSuit];
+    let sumBankCards = 0;
+    
+    for(let number in bankCards){
+    sumBankCards += parseInt(bankCards[number])
+    if(sumBankCards > 21){ 
+        resultBank.innerHTML = "You won!!"
+        result.innerHTML = "You lost..."
+        gameFinished = true;
+        endGame();
+    } else {
+        bankPoints.innerHTML = "Now the bank has "+sumBankCards + " points.";
+    }
+    }
+}
+function stand(){
+    let sumPlayerCards = 0;
+    buttonAsk.disabled = true;
+    buttonStart.disabled = true;
+    for(let number in playerCards){
+    sumPlayerCards += parseInt(playerCards[number])
+    if(sumPlayerCards > 21){ 
+        result.innerHTML = "You lost..."
+        resultBank.innerHTML = "You won!"
+        gameFinished = true;
+        endGame();
+    } else {
+        points.innerHTML = "Now you have "+sumPlayerCards + " points.";
+    }
+    }
+    card.innerHTML = "You stand with " + sumPlayerCards + " points..."
+    playerStand = true;
+    checkStand();
+}
+function standBank(){
+    let sumBankCards = 0;
+    buttonAskBank.disabled = true;
+    buttonStartBank.disabled = true;
+    
+    for(let number in bankCards){
+    sumBankCards += parseInt(bankCards[number])
+    if(sumBankCards > 21){ 
+        resultBank.innerHTML = "You won!!"
+        gameFinished = true;
+        endGame();
+    } else {
+        bankPoints.innerHTML = "Now the bank has "+sumBankCards + " points.";
+    }
+    }
+    bankCard.innerHTML = "The bank stands with " + sumBankCards + " points..."
+    bankStand = true;
+    checkStand()
+}
+function checkStand(){
+    let sumBankCards = 0;
+    let sumPlayerCards = 0;
+    if(playerStand && bankStand){
+        for(let number in bankCards){
+            sumBankCards += parseInt(bankCards[number])
+        }
+        for(let number in playerCards){
+            sumPlayerCards += parseInt(playerCards[number])
+        }
+        if(sumPlayerCards === sumBankCards){
+            result.innerHTML ="It's a tie"
+            resultBank.innerHTML ="It's a tie"
+        }
+        if(sumPlayerCards > sumBankCards){
+            result.innerHTML ="You won! You're a blackjack devil!"
+            resultBank.innerHTML ="You lost..."
+        }
+        if(sumPlayerCards < sumBankCards){
+            result.innerHTML ="You lost..."
+            resultBank.innerHTML ="You won! You're a blackjack devil!"
+        }
+        gameFinished = true;
+        endGame();
+    } else {
+        return;
+    }
+}
+function endGame(){
+    if(gameFinished){
+    buttonAskBank.disabled = true;
+    buttonStartBank.disabled = true;
+    buttonStandBank.disabled = true;
+    buttonAsk.disabled = true;
+    buttonStart.disabled = true;
+    buttonStand.disabled = true;
+    }
+}
+</script>

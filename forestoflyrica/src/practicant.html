@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <title>Number guessing game</title>
+    </head>
+    <body> 
+        <div id="stage">
+            <div id="scale"></div>
+            <div id="arrow"></div>
+        </div>
+        <p id="output"></p>
+        <input id="input" type="text" placeholder="Enter your guess…" autofocus> 
+        <button id="guess">guess</button>
+        <button id="add">add</button>
+        <button id="drop">drop</button>
+        <button id="open">open</button>
+    </body>
+</html>
+
+<script>
+    var armari = ["Piper", "Buzz", "Cordelius", "Leon"];
+    var input = document.querySelector("#input");
+    var button = document.querySelector("#guess");
+    var buttonadd = document.querySelector("#add");
+    var buttondrop = document.querySelector("#drop");
+    var buttonshow = document.querySelector("#open");
+    var output = document.querySelector("#output");
+    button.addEventListener("click", clickHandler, false);
+    buttonadd.addEventListener("click", clickAdd, false);
+    buttonshow.addEventListener("click", clickShow, false);
+    buttondrop.addEventListener("click", clickDrop, false)
+    function clickShow(){
+        open();
+    }
+    function clickDrop(){
+        drop();
+    }
+    function clickAdd(){
+        add();
+    }
+    function clickHandler(){
+        trobar();
+    }
+    function trobar (){
+        var valor = "";
+        valor = input.value;
+        var trobat = false;
+        for (var i = 0; i<armari.length; i++){
+    if(valor.indexOf(armari[i])  !==-1)
+    {
+        trobat=true;
+        valor=armari[i];
+        break;
+    } 
+}
+    if(trobat) output.innerHTML = "Has agafat "+ valor+ " de l'armari " + ++i +" voltes has fet";
+    else output.innerHTML = "No l'has trobat i has donat " + i+" voltes.";
+        
+    }
+    function add(){
+        var valor ="";
+        valor = input.value;
+        armari.push(valor);
+    }
+    function open(){
+        output.innerHTML= "Tens tot aixo a l'armari " + armari;
+    }
+    function drop(){
+        var valor ="";
+        valor = input.value;
+        posicio = armari.indexOf(valor);
+        if (posicio !== -1) armari.splice(posicio, 1);
+    }
+</script>

@@ -1,0 +1,286 @@
+<!doctype html>
+<title>The Forest of Lyrica</title>
+<link rel="stylesheet" href="lyrica.css">
+
+<div id="stage">
+  <h1>The Forest of Lyrica</h1>
+  <img src="" width="300" height="267">
+  <p id="output"></p>
+  <input id="input" type="text" placeholder="Enter your action..."> 
+  <button>enter</button>
+</div>
+
+<script>
+//Create the map
+var map = [];
+
+map[0] = "An old stone keep.";
+map[1] = "A deep well.";
+map[2] = "A sunny glade";
+map[3] = "A sleeping dragon";
+map[4] = "A narrow pathway";
+map[5] = "An ancient gate";
+map[6] = "The edge of a river";
+map[7] = "A lonely wooden bench";
+map[8] = "An isolated cottage. Faint music comes from inside";
+
+var images = [];
+images[0] ="keep.png";
+images[1] ="well.png";
+images[2] ="glade.png";
+images[3] ="dragon.png";
+images[4] ="path.png";
+images[5] ="gate.png";
+images[6] ="river.png";
+images[7] ="bench.png";
+images[8] ="cottage.png";
+
+//Messages for boundaries
+var blockedPathMessages = [];
+blockedPathMessages[0] = "It's too dangerous to move that way.";
+blockedPathMessages[1] = "A mysterious force holds you back.";
+blockedPathMessages[2] = "A tangle of thorns blocks your way.";
+blockedPathMessages[3] = "You can't step over the dragon.";
+blockedPathMessages[4] = "";
+blockedPathMessages[5] = "The gate locks shut.";
+blockedPathMessages[6] = "The river is too deep to cross.";
+blockedPathMessages[7] = "The trees are too thick to pass.";
+blockedPathMessages[8] = "You're too scared to go that way.";
+
+//Create the items and set their location
+var items = ["flute", "stone", "sword"];
+var itemsLocation = [1 ,6, 8];
+//An array to store what the player ir carrying
+var backpack = [];
+
+//set the players start location and init player's input
+var mapLocation = 4;
+var playersInput = "";
+var gameMessage = "";
+//Create array of actions and a variable for the current action
+var actionsIKnow = ["north", "east", "south", "west", "take", "use", "drop"];
+var action = "";
+//An array of the items game understands and a variable to store current item
+var itemsIKnow = ["flute", "stone", "sword"];
+var item = "";
+//The output and input elements
+var output = document.querySelector("#output");
+var input = document.querySelector("#input");
+//The image
+var image = document.querySelector("img");
+//the button
+var button = document.querySelector("button");
+button.style.cursor = "pointer";
+button.addEventListener("click", clickHandler, false);
+
+//Display the player's location
+render();
+
+function clickHandler(){
+  playGame();
+}
+
+function playGame(){
+  playersInput = input.value;
+  playersInput = playersInput.toLowerCase();
+
+  gameMessage = "";
+  action = "";
+  
+  //Figure out the player's action
+  for (var i = 0; i<actionsIKnow.length; i++){
+    if(playersInput.indexOf(actionsIKnow[i]) !==-1)
+    {
+      action = actionsIKnow[i];
+      break;
+    }
+  }
+  //Figure out the item the player wants
+  for (var i = 0; i<itemsIKnow.length; i++){
+    if(playersInput.indexOf(itemsIKnow[i]) !==-1)
+    {
+      item = itemsIKnow[i];
+      break;
+    }
+  }
+
+  switch(action)
+  {
+    case "north":
+      if(mapLocation >= 3){
+        mapLocation -= 3;
+      }
+      else
+      {
+        gameMessage = blockedPathMessages[mapLocation];
+      }
+      //mapLocation = mapLocation -3
+      break;
+    case "east":
+      if(mapLocation % 3 != 2){     
+        mapLocation++;
+      }
+      else
+      {
+        gameMessage = blockedPathMessages[mapLocation];
+      }
+      break;
+    case "south":
+      if(mapLocation < 6){
+        mapLocation += 3;
+      }
+      else
+      {
+        gameMessage = blockedPathMessages[mapLocation];
+      }
+      break;
+    case "west":
+      if (mapLocation % 3 != 0){
+        mapLocation--;
+      }
+      else
+      {
+        gameMessage = blockedPathMessages[mapLocation];
+      }
+      break;
+    case "take":
+      takeItem();
+      break;
+    case "use":
+      useItem();
+      break;
+    case "drop":
+      dropItem();
+      break;
+    default:
+      gameMessage = "I don't understand that"
+  }
+  render();
+}
+
+function takeItem(){
+//this function check if the item is in the mapLocation and if true put the item in the backpack
+ //check if item is in the list of items ans in the mapLocation
+ //if not generate a message saying "you can't use that itam"
+ //if yes put the item in the backpack
+ //add "you are carriyng " + item + in your backpack to game Message
+ //remove item from the map
+ var itemIndex = items.indexOf(item);
+    
+    if (itemsLocation[itemIndex] === mapLocation && itemIndex !== -1) {
+        // Remove the item from the location
+        backpack.push(item);
+
+        // Add the item to the backpack
+        items.splice(itemIndex, 1);
+        itemsLocation.splice(itemIndex, 1);
+
+        // Update the game message
+        gameMessage = "You took the " + item + ".";
+    } else {
+        // If the item doesn't exist in the location
+        gameMessage = "There's nothing to take here.";
+    }
+}
+
+function dropItem(){
+  if (backpack.length === 0) {
+    gameMessage = "You're not carrying anything to drop.";
+    return;
+  }
+
+  var itemIndex = backpack.indexOf(item);
+
+  if(itemIndex !== -1) {
+    backpack.splice(itemIndex, 1);
+    items.push(item);
+    itemsLocation.push(mapLocation);
+    gameMessage = "You dropped the " + item + ".";
+  }
+    else {
+      gameMessage = "You're not carrying that item.";
+    }
+}
+
+function useItem(){
+  var backpackIndexNumber =  backpack.indexOf(item);
+
+  if (backpack.length === 0) {
+    gameMessage = "You're not carrying anything to use.";
+    return;
+  }
+  if(backpackIndexNumber == -1){
+    gameMessage = "You're not carrying that item.";
+    return;
+}
+  switch(item){
+    case "flute":
+      if (mapLocation === 8){
+        gameMessage = "Beautiful music fills the air.";
+      gameMessage = "A wizard old man steps outside.";
+      gameMessage = "and hands you a sword";
+
+      //Add the sword to the world
+      items.push("sword");
+      itemsLocation.push(mapLocation);
+      }
+      else{
+        gameMessage = "You try and play the flute.";
+      gameMessage = "but it makes no sound here.";
+      }
+    break;
+    case "sword":
+      if(mapLocation ===3)
+      {
+        gameMessage ="You swing the sword and slay the dragon.";
+        gameMessage ="You've saved the forest of Lyrica!.";
+
+        //end OF THE GAME
+
+      }
+      else{
+        gameMessage="You swing the sword listlessly.";
+      }
+      break;
+    case"stone":
+    if(mapLocation === 1)
+      {
+        gameMessage ="You drop the stone in the well.";
+        gameMessage =".A magical flute appears.";
+
+        //remove the stone
+      backpack.splice(backpackIndexNumber, 1)
+      //Add the flute to the world
+      item.push("flute");
+      itemsLocation.push(mapLocation);
+      // remove the stone from the game
+
+      }
+      
+      else{
+        gameMessage="You fumble with the stone in your pocket.";
+      }
+    break;
+  }
+
+}
+
+function render(){
+  //Render the location
+  output.innerHTML = map[mapLocation];
+  image.src = "../images/" + images[mapLocation];
+
+  for(var i = 0; i < items.length; i++){
+    if (mapLocation === itemsLocation[i]){
+      output.innerHTML += "<br>You see a <strong>" + items[i] +"</strong> here";
+    }
+  }  
+  //Display the game message
+  output.innerHTML += "<br><em>" + gameMessage + "</em>"
+
+  //Display the player's backpack contents
+  if(backpack.length !== 0){
+    output.innerHTML += "<br>You're carrying: " + backpack.join(", ");
+  }
+}
+</script>

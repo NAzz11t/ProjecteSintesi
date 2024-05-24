@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>BLACK JACK LLOREN TORRES 👹</title>
+</head> 
+<body>
+    <h2>👹 Los diablos BlackJack. 👹 </h2>
+    <div id="tauler3"></div>
+    <div id="tauler">
+        <div id="jugador">
+            <button id="start">Comença la jugada</button>
+            <button id="demanar">Demanar carta</button>
+            <button id="plantar">Plantar</button>
+            <p id="carta"></p>
+            <p id="punts">Suma de punts: 👹 </p>
+            <h4 id="resultat"></h4>
+        </div>
+        <div id="banca">
+            <button id="startBanca">Comença la jugada</button>
+            <button id="demanarBanca">Demanar carta</button>
+            <button id="plantarBanca">Plantar</button>
+            <p id="cartabanca"></p>
+            <p id="puntsbanca">Suma de punts: 👹</p>
+            <h4 id="resultatbanca"></h4>
+        </div>
+    </div>
+    <div id="tauler2"></div>
+</body>
+</html>
+<script>
+//jugador
+var buttonStart = document.querySelector("#start");
+var buttonDemanar = document.querySelector("#demanar");
+var buttonPlantar = document.querySelector("#plantar");
+var punts = document.querySelector("#punts");
+var carta = document.querySelector("#carta");
+var resultat = document.querySelector("#resultat");
+buttonStart.addEventListener("click", funcioStart, false);
+buttonDemanar.addEventListener("click", funcioDemanar, false);
+buttonPlantar.addEventListener("click", funcioPlantar, false);
+//banca
+var buttonStartBanca = document.querySelector("#startBanca");
+var buttonDemanarBanca = document.querySelector("#demanarBanca");
+var buttonPlantarBanca = document.querySelector("#plantarBanca");
+var puntsBanca = document.querySelector("#puntsbanca");
+var cartaBanca = document.querySelector("#cartabanca");
+var resultatBanca = document.querySelector("#resultatbanca");
+buttonStartBanca.addEventListener("click", funcioStartBanca, false);
+buttonDemanarBanca.addEventListener("click", funcioDemanarBanca, false);
+buttonPlantarBanca.addEventListener("click", funcioPlantarBanca, false);
+
+//funcions jugador
+function funcioStart(){
+    start();
+}
+function funcioDemanar(){
+    demanar();
+}
+function funcioPlantar(){
+    plantar();
+}
+
+//funcions banca
+function funcioStartBanca(){
+    startBanca();
+}
+function funcioDemanarBanca(){
+    demanarBanca();
+}
+function funcioPlantarBanca(){
+    plantarBanca();
+}
+var pal = [];
+pal[0]= "cors";
+pal[1]= "diamants";
+pal[2]= "trebols";
+pal[3]= "picas";
+
+var valor = [];
+valor[0]="11";
+valor[1]="10";
+valor[2]="10";
+valor[3]="10";
+valor[4]="2";
+valor[5]="3";
+valor[6]="4";
+valor[7]="5";
+valor[8]="6";
+valor[9]="7";
+valor[10]="8";
+valor[11]="9";
+valor[12]="10";
+
+var tincCartes = [];
+var cartesBanca = [];
+
+var jugadorPlantar = false;
+var bancaPlantar = false;
+var acabat = false;
+
+function start(){
+    var numrandom = Math.floor(Math.random() * valor.length);
+    var palrandom = Math.floor(Math.random() * pal.length);
+    var valoractual = valor[numrandom];
+    carta.innerHTML = "T'ha tocat un " + valor[numrandom] + " de " + pal[palrandom];
+    punts.innerHTML = "Per començar tens " + valor[numrandom] +" punts";
+    tincCartes.push(valoractual);
+}
+function demanar(){
+    var numrandom = Math.floor(Math.random() * valor.length);
+    var palrandom = Math.floor(Math.random() * pal.length);
+    var valoractual = valor[numrandom];
+    tincCartes.push(valoractual);
+    carta.innerHTML = "T'ha tocat un " + valor[numrandom] + " de " + pal[palrandom];
+    let sumatincCartes = 0;
+    
+    for(let numero in tincCartes){
+    sumatincCartes += parseInt(tincCartes[numero])
+    if(sumatincCartes > 21){ 
+        resultat.innerHTML = "Has perdut..."
+        resultatBanca.innerHTML = "Has guanyat!!"
+        acabat = true;
+        endgame();
+    } else {
+        punts.innerHTML = "Ara tens "+sumatincCartes + " punts.";
+    }
+    }
+}
+function startBanca(){
+    var numrandom = Math.floor(Math.random() * valor.length);
+    var palrandom = Math.floor(Math.random() * pal.length);
+    var valoractual = valor[numrandom];
+    cartaBanca.innerHTML = "T'ha tocat un " + valor[numrandom] + " de " + pal[palrandom];
+    puntsBanca.innerHTML = "Per començar tens " + valor[numrandom] +" punts";
+    cartesBanca.push(valoractual);
+}
+function demanarBanca(){
+    var numrandom = Math.floor(Math.random() * valor.length);
+    var palrandom = Math.floor(Math.random() * pal.length);
+    var valoractual = valor[numrandom];
+    cartesBanca.push(valoractual);
+    cartaBanca.innerHTML = "T'ha tocat un " + valor[numrandom] + " de " + pal[palrandom];
+    let sumatincCartesbanca = 0;
+    
+    for(let numero in cartesBanca){
+    sumatincCartesbanca += parseInt(cartesBanca[numero])
+    if(sumatincCartesbanca > 21){ 
+        resultatBanca.innerHTML = "Has perdut..."
+        resultat.innerHTML = "Has guanyat!!"
+        acabat = true;
+        endgame();
+    } else {
+        puntsBanca.innerHTML = "Ara tens "+sumatincCartesbanca + " punts.";
+    }
+    }
+}
+    function plantar(){
+        let sumatincCartes = 0;
+        buttonDemanar.disabled = true;
+        buttonStart.disabled = true;
+    for(let numero in tincCartes){
+    sumatincCartes += parseInt(tincCartes[numero])
+    if(sumatincCartes > 21){ 
+        resultat.innerHTML = "Has perdut..."
+        resultatBanca.innerHTML = "Has guanyat!"
+        acabat = true;
+        endgame();
+    } else {
+        punts.innerHTML = "Ara tens "+sumatincCartes + " punts.";
+    }
+    }
+        carta.innerHTML = "T'has plantat amb " + sumatincCartes + " punts..."
+        jugadorPlantar = true;
+        comprovarPlantar();
+    }
+    function plantarBanca(){
+        let sumatincCartesbanca = 0;
+        buttonDemanarBanca.disabled = true;
+        buttonStartBanca.disabled = true;
+    
+    for(let numero in cartesBanca){
+    sumatincCartesbanca += parseInt(cartesBanca[numero])
+    if(sumatincCartesbanca > 21){ 
+        resultatBanca.innerHTML = "Has perdut..."
+        acabat = true;
+        endgame();
+    } else {
+        puntsBanca.innerHTML = "Ara tens "+sumatincCartesbanca + " punts.";
+    }
+    }
+        cartaBanca.innerHTML = "T'has plantat amb " + sumatincCartesbanca + " punts..."
+        bancaPlantar = true;
+        comprovarPlantar()
+    }
+    function comprovarPlantar(){
+        let sumatincCartesbanca = 0;
+        let sumatincCartes = 0;
+        if(jugadorPlantar && bancaPlantar){
+            for(let numero in cartesBanca){
+                sumatincCartesbanca += parseInt(cartesBanca[numero])
+                console.log(sumatincCartesbanca)
+            }
+            for(let numero in tincCartes){
+                sumatincCartes += parseInt(tincCartes[numero])
+            }
+            if(sumatincCartes === sumatincCartesbanca){
+                resultat.innerHTML ="Has empatat"
+                resultatBanca.innerHTML ="Has empatat"
+            }
+            if(sumatincCartes > sumatincCartesbanca){
+                resultat.innerHTML ="Has guanyat ets un diablo lloren"
+                resultatBanca.innerHTML ="Has perdut..."
+            }
+            if(sumatincCartes < sumatincCartesbanca){
+                resultat.innerHTML ="Has perdut..."
+                resultatBanca.innerHTML ="Has guanyat ets un diablo lloren"
+            }
+        acabat = true;
+        endgame();
+        } else {
+            return;
+        }
+    }
+    function endgame(){
+        if(acabat){
+        buttonDemanarBanca.disabled = true;
+        buttonStartBanca.disabled = true;
+        buttonPlantarBanca.disabled = true;
+        buttonDemanar.disabled = true;
+        buttonStart.disabled = true;
+        buttonPlantar.disabled = true;
+        }
+    }
+</script>
